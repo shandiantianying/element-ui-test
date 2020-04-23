@@ -55,17 +55,33 @@ export default {
   methods: {
     resetForm(formName) {
       console.log("1111");
-
       this.$refs[formName].resetFields();
+    },
+    submitForm(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.$message({
+            message: "登录成功！",
+            type: "success",
+            duration:1000
+          });
+          this.$router.push({path:'/home'})
+        } else {
+          this.$message({
+            message: "检验不通过！",
+            type: "error"
+          });
+          return false;
+        }
+      });
     }
   }
 };
 </script>
 <style lang="less" scoped>
-.loginformdiv:hover
-{
-// background-color:rgb(0,0,0);
-    border-radius: 40%;
+.loginformdiv:hover {
+  // background-color:rgb(0,0,0);
+  border-radius: 40%;
 }
 .usernameinput {
   margin: 10px 8px;
