@@ -18,8 +18,7 @@
           <el-menu
             :default-active="activePath"
             class="el-menu-vertical-demo"
-            @open="handleOpen"
-            @close="handleClose"
+      
             background-color="#333744"
             text-color="#fff"
             active-text-color="#0099FF"
@@ -48,14 +47,30 @@
           </el-menu>
         </el-row>
       </el-aside>
+
       <el-main>
+      <!--   <el-tabs
+          v-model="editableTabsValue"
+          type="card"
+          closable
+          @tab-remove="removeTab"
+          @tab-click="handleClick"
+        >
+          <el-tab-pane
+            v-for="(item, index) in editableTabs"
+            :key="item.name"
+            :label="item.title"
+            :name="item.name"
+          > -->
+            <!-- {{item.content}} -->
+          <!-- </el-tab-pane>
+        </el-tabs> -->
+
         <!-- <router-view></router-view> -->
         <keep-alive v-if="$route.meta.keepAlive">
-            <router-view></router-view>
+          <router-view></router-view>
         </keep-alive>
-        <router-view v-else></router-view>  
-
-
+        <router-view v-else></router-view>
       </el-main>
     </el-container>
   </el-container>
@@ -71,6 +86,19 @@ export default {
       value: "",
       isCollapse: false,
       activePath: "",
+      dynamicTags: ["标签一", "标签二", "标签三"],
+      editableTabs: [
+        {
+          title: "首页 ",
+          name: "index",
+          content: "Tab 1 content"
+        },
+        {
+          title: "Tab 2",
+          name: "accountmanager",
+          content: "Tab 2 content"
+        }
+      ],
       menuList: [
         {
           authName: "账套管理",
@@ -128,11 +156,28 @@ export default {
   },
   methods: {
     saveNavState(path) {
+      let newoobj = {
+        title: "Tab",
+          name: path,
+          content: "Tab 2 content"
+      }
+      this.editableTabs.push(newoobj); 
       window.sessionStorage.setItem("activePath", path);
       this.activePath = path;
     },
     btnCollapse() {
       this.isCollapse = !this.isCollapse;
+    },
+    handleClose(tag) {
+      this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
+    },
+    handleClick(tab, event) {
+      let str = event.target.getAttribute("id");
+      let id = str.substring(4);
+      this.$router.push({ path: "/" + id });
+      console.log(tab);
+      console.log(event);
+      console.log(event.target.getAttribute("id"));
     }
   }
 };
@@ -174,6 +219,9 @@ export default {
     cursor: pointer;
     color: #fff;
   }
+}
+.el-main {
+  padding: 5px !important;
 }
 .el-menu {
   border: 0px !important;
