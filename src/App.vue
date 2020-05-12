@@ -25,4 +25,22 @@
 //     }
 //   }
 // }
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,body,#app {
+  width: 100%;
+  height: 100%;
+}
+html { overflow:auto;} 
+ul,
+li {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
 </style>

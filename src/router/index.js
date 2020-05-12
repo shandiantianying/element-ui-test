@@ -34,6 +34,19 @@ const routes = [
         name: 'VouchQuery',
         meta: { keepAlive: true },
         component: () => import('../views/vouchermanager/VouchQuery.vue')
+      } ,
+      {
+        path: '/carryover',
+        name: 'Carryover',
+        meta: { keepAlive: true },
+        component: () => import('../views/carryovermanager/Carryover.vue')
+      }
+      ,
+      {
+        path: '/user',
+        name: 'User',
+        meta: { keepAlive: true },
+        component: () => import('../views/usermanager/User.vue')
       }
     ]
   },

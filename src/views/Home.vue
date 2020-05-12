@@ -8,7 +8,7 @@
         <span>记账后台管理系统</span>
       </div>
       <div class="btnLoginOut">
-        <el-button type="primary" plain disabled>退出</el-button>
+        <el-button type="primary" plain @click="loginOut()">退出</el-button>
       </div>
     </el-header>
     <el-container>
@@ -18,7 +18,6 @@
           <el-menu
             :default-active="activePath"
             class="el-menu-vertical-demo"
-      
             background-color="#333744"
             text-color="#fff"
             active-text-color="#0099FF"
@@ -49,7 +48,7 @@
       </el-aside>
 
       <el-main>
-      <!--   <el-tabs
+        <!--   <el-tabs
           v-model="editableTabsValue"
           type="card"
           closable
@@ -61,10 +60,10 @@
             :key="item.name"
             :label="item.title"
             :name="item.name"
-          > -->
-            <!-- {{item.content}} -->
-          <!-- </el-tab-pane>
-        </el-tabs> -->
+        >-->
+        <!-- {{item.content}} -->
+        <!-- </el-tab-pane>
+        </el-tabs>-->
 
         <!-- <router-view></router-view> -->
         <keep-alive v-if="$route.meta.keepAlive">
@@ -128,7 +127,7 @@ export default {
           children: [
             {
               authName: "结转查询",
-              path: "ucos",
+              path: "carryover",
               id: 1041
             }
           ]
@@ -155,13 +154,33 @@ export default {
     this.activePath = window.sessionStorage.getItem("activePath");
   },
   methods: {
+    loginOut() {
+      this.$confirm("确认退出系统吗?", "信息", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.$router.push({ path: "/login" });
+          // this.$message({
+          //   type: 'success',
+          //   message: '删除成功!'
+          // });
+        })
+        .catch(() => {
+          // this.$message({
+          //   type: "info",
+          //   message: "已取消删除"
+          // });
+        });
+    },
     saveNavState(path) {
       let newoobj = {
         title: "Tab",
-          name: path,
-          content: "Tab 2 content"
-      }
-      this.editableTabs.push(newoobj); 
+        name: path,
+        content: "Tab 2 content"
+      };
+      this.editableTabs.push(newoobj);
       window.sessionStorage.setItem("activePath", path);
       this.activePath = path;
     },

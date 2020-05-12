@@ -2,8 +2,8 @@
   <div>
     <el-breadcrumb separator="/" class="brdcmb">
       <el-breadcrumb-item :to="{ path: '/index' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>账套管理</el-breadcrumb-item>
-      <el-breadcrumb-item>账套查询</el-breadcrumb-item>
+      <el-breadcrumb-item>结转管理</el-breadcrumb-item>
+      <el-breadcrumb-item>结转查询</el-breadcrumb-item>
     </el-breadcrumb>
     <el-card class="box-card">
       <el-form :inline="true" :model="formValidate" :label-position="labelPosition">
@@ -33,27 +33,13 @@
         </el-row>
         <el-row :gutter="2">
           <el-col :span="8">
-            <el-form-item label="启用年" label-width="100px">
-              <el-select v-model="formValidate.qyn" placeholder>
-                <el-option
-                  :label="item.desp"
-                  :value="item.value"
-                  v-for="item in qynD"
-                  :key="item.value"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="启用月">
-              <el-select v-model="formValidate.qyy" placeholder>
-                <el-option
-                  :label="item.desp"
-                  :value="item.value"
-                  v-for="item in qyyD"
-                  :key="item.value"
-                ></el-option>
-              </el-select>
+            <el-form-item label="日期起" label-width="100px">
+              <el-date-picker
+                v-model="formValidate.jzny"
+                align="right"
+                type="date"
+                placeholder="选择日期"
+              ></el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -64,34 +50,45 @@
           </el-col>
         </el-row>
       </el-form>
-
       <el-table :data="tableData" style="width: 100%" border stripe v-loading="loading">
         <!-- <el-table-column type="index"></el-table-column> -->
-        <el-table-column prop="shxydm" label="社会信用代码" width="200"></el-table-column>
+        <el-table-column prop="shxydm" label="社会信用代码" width="190"></el-table-column>
         <el-table-column prop="dwmc" label="单位名称" width="200"></el-table-column>
-        <el-table-column prop="qyn" label="年" width="60"></el-table-column>
-        <el-table-column prop="qyy" label="月" width="60"></el-table-column>
-        <el-table-column prop="ztseqid" label="账套名称"></el-table-column>
+        <el-table-column prop="jzny" label="日期" width="100"></el-table-column>
         <el-table-column prop="cjsj" label="创建时间"></el-table-column>
         <el-table-column prop="zhgxsj" label="更新时间"></el-table-column>
         <el-table-column prop="state" label="状态" width="70">
           <template slot-scope="scope">
-            <el-switch v-model="scope.row.ztbz" active-color="#999"
-  					inactive-color="#13ce66"
-  					:active-value="0"
-    				:inactive-value="1"></el-switch>
+            <el-switch
+              v-model="scope.row.ztbz"
+              active-color="#999"
+              inactive-color="#13ce66"
+              :active-value="0"
+              :inactive-value="1"
+            ></el-switch>
             <!-- <el-tag type="success">{{scope.row.ztbz}}</el-tag> -->
           </template>
         </el-table-column>
         <el-table-column label="操作" width="120">
           <template slot-scope="scope">
-            <el-button type="primary" icon="el-icon-edit" size="mini" @click="editAccount(`${scope.row.ztid}`)"></el-button>
-          <el-tooltip content="查看返回详情" placement="top">
-            <el-button type="primary" icon="el-icon-share" size="mini" @click="queryDesp(`${scope.row.fhxx}`)"></el-button>
-         </el-tooltip>
+            <el-button
+              type="primary"
+              icon="el-icon-edit"
+              size="mini"
+              @click="editAccount(`${scope.row.pzid}`)"
+            ></el-button>
+            <el-tooltip content="查看返回详情" placement="top">
+              <el-button
+                type="primary"
+                icon="el-icon-share"
+                size="mini"
+                @click="queryDesp(`${scope.row.fhxx}`)"
+              ></el-button>
+            </el-tooltip>
           </template>
         </el-table-column>
       </el-table>
+
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -102,33 +99,26 @@
         :total="total"
       ></el-pagination>
     </el-card>
-
-<el-dialog
-  title="提示"
-  :visible.sync="dialogVisible"
-  width="50%">
-  <span>{{fhxx}}</span>
-  <span slot="footer" class="dialog-footer">
-    <!-- <el-button @click="dialogVisible = false">取 消</el-button> -->
-    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-  </span>
-</el-dialog>
-
-    <!-- <el-input v-model="input" placeholder="请输入内容"></el-input> -->
+    <el-dialog title="提示" :visible.sync="dialogVisible" width="50%">
+      <span>{{fhxx}}</span>
+      <span slot="footer" class="dialog-footer">
+        <!-- <el-button @click="dialogVisible = false">取 消</el-button> -->
+        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
 import api from "@/network/api";
 import { request } from "@/network/index";
 import { ztbzdata, qyndata, qyydata } from "@/data/publicData";
-
 export default {
-  name: "AccountManager",
+  name: "Carryover",
   data() {
     return {
       labelPosition: "right",
       dialogVisible: false,
-      fhxx:"",
+      fhxx: "",
       total: 5,
       queryInfo: {
         pagenum: 1,
@@ -137,29 +127,29 @@ export default {
       formValidate: {
         shxydm: "",
         dwmc: "",
-        qyn: "0000",
-        qyy: "0",
+        jzny: "",
         ztbz: "0"
       },
-      input: "",
+      loading: false,
       tableData: [],
       ztbzD: [],
       qynD: [],
-      qyyD: [],
-      loading: false
+      qyyD: []
     };
+  },
+  queryDesp(fhxx) {
+    this.fhxx = fhxx;
+    this.dialogVisible = true;
   },
   created() {
     this.ztbzD = ztbzdata;
     this.qynD = qyndata;
     this.qyyD = qyydata;
-    this.getDatalist();
+    // this.getDatalist();
   },
+
   methods: {
-    editAccount(ztid){
-      console.log(ztid);
-    },
-    queryDesp(fhxx){
+    queryDesp(fhxx) {
       this.fhxx = fhxx;
       this.dialogVisible = true;
     },
@@ -169,8 +159,7 @@ export default {
     onReset() {
       this.formValidate.shxydm = "";
       this.formValidate.dwmc = "";
-      this.formValidate.qyn = "0000";
-      this.formValidate.qyy = "0";
+      this.formValidate.jzny = "";
       this.formValidate.ztbz = "0";
     },
     getDatalist() {
@@ -179,9 +168,14 @@ export default {
       params = this.formValidate;
       console.log(params);
       request({
-        url: api.accountMangerData
-          .replace("PAGENUM", this.queryInfo.pagenum)
-          .replace("PAGESIZE", this.queryInfo.pagesize),
+        url:
+          "/new/as?pageNum=" +
+          this.queryInfo.pagenum +
+          "&pageSize=" +
+          this.queryInfo.pagesize,
+        //  url: api.voucherMangerData
+        //   .replace("PAGENUM", this.queryInfo.pagenum)
+        //   .replace("PAGESIZE", this.queryInfo.pagesize),
         method: "POST",
         data: params
       })
@@ -220,8 +214,5 @@ export default {
   }
 };
 </script>
-<style >
-.el-select{
-  width: 210px;
-}
+<style lang="less" scoped>
 </style>
